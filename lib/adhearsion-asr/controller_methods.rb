@@ -44,7 +44,13 @@ module AdhearsionASR
 
       grammars = AskGrammarBuilder.new(options).grammars
 
-      output_document = prompts.empty? ? nil : output_formatter.ssml_for_collection(prompts)
+      output_document = if prompts.empty?
+                          nil
+                        elsif options[:preformatted_prompt] # use preformatted prompt
+                          prompts
+                        else
+                          output_formatter.ssml_for_collection(prompts)
+                        end
 
       PromptBuilder.new(output_document, grammars, options).execute self
     end
